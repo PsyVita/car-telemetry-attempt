@@ -27,14 +27,17 @@ a:hover{text-decoration:underline}
 .topbar .brand .fish{font-family:var(--mono);color:var(--tuna);font-size:13px;margin-right:6px}
 
 .layout{display:flex;min-height:100vh;padding-top:54px}
-nav{width:272px;min-width:272px;background:var(--ocean);border-right:1px solid var(--line2);position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;padding:14px 0 50px;z-index:40;transition:margin-left .25s;scrollbar-width:none}
-nav::-webkit-scrollbar{display:none}
+nav{width:272px;min-width:272px;background:var(--ocean);border-right:1px solid var(--line2);position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;padding:14px 0 50px;z-index:40;transition:margin-left .25s;scrollbar-width:thin;scrollbar-color:#2a4a66 transparent}
+nav::-webkit-scrollbar{width:9px}
+nav::-webkit-scrollbar-thumb{background:#2a4a66;border-radius:8px;border:2px solid var(--ocean)}
+nav::-webkit-scrollbar-track{background:transparent}
 body.navclosed nav{margin-left:-272px}
 nav .grp{padding:14px 20px 4px;font-size:10px;text-transform:uppercase;letter-spacing:1.6px;color:var(--faint)}
 nav .grp.gv{color:var(--viewer)} nav .grp.go{color:var(--op)} nav .grp.gt{color:var(--tech)}
 nav a.item{flex:1;display:block;padding:6px 12px 6px 6px;color:var(--dim);font-size:13.5px;border-left:3px solid transparent;border-radius:0 7px 7px 0}
 nav a.sub{font-size:12.5px;color:var(--faint)}
 nav a.sub2{font-size:12px;color:var(--faint)}
+nav a.sub3{font-size:11.5px;color:var(--faint)}
 nav a.item:hover{color:var(--tuna2);text-decoration:none;background:rgba(79,195,247,.05)}
 nav a.item.active{color:#fff;border-left-color:transparent;background:rgba(79,195,247,.15);border-radius:7px;font-weight:500}
 main{flex:1;max-width:1000px;padding:30px 46px 120px;margin:0 auto;min-width:0}
@@ -254,9 +257,9 @@ nav .nv>.navrow>.caret::before{content:"";position:absolute;left:50%;margin-left
 nav .nv>.navrow>.caret::after{content:"";position:absolute;left:50%;margin-left:-7px;bottom:3px;width:14px;height:14px;background-color:var(--faint);-webkit-mask:var(--anchorsvg) center/contain no-repeat;mask:var(--anchorsvg) center/contain no-repeat;transition:background-color .25s}
 nav .nv:not(.collapsed)>.navrow>.caret::before{background:var(--role);background:linear-gradient(to bottom,color-mix(in srgb,var(--role) 14%,transparent),var(--role))}
 nav .nv:not(.collapsed)>.navrow>.caret::after{background-color:var(--role)}
-/* smooth reveal so the anchor visibly pays out and hauls back up */
+/* expand / collapse reveal */
 nav .nv>.kids{overflow:hidden;max-height:0;transition:max-height .4s ease}
-nav .nv:not(.collapsed)>.kids{max-height:500px}
+nav .nv:not(.collapsed)>.kids{max-height:700px}
 
 /* whole-sidebar collapse = ship's wheel: spins 180 deg + resizes between open/collapsed */
 .topbar .burger svg{width:26px;height:26px;color:var(--tuna);transform:rotate(0deg) scale(1.06);transition:transform .5s cubic-bezier(.34,1.25,.5,1)}
@@ -350,7 +353,7 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
   <div class="cat" data-cat="start">
     <div class="catrow"><div class="grp">Start here</div></div>
     <div class="kids">
-      <div class="nv collapsed">
+      <div class="nv">
         <div class="navrow"><span class="caret">▾</span><a class="item" href="#overview">1. Overview</a></div>
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#architecture">1.1 Architecture</a></div>
@@ -364,14 +367,14 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
   <div class="cat" data-cat="viewer">
     <div class="catrow"><div class="grp gv">🐠 For viewers · no install</div></div>
     <div class="kids">
-      <div class="nv collapsed">
+      <div class="nv">
         <div class="navrow"><span class="caret">▾</span><a class="item" href="#access">2. Getting access</a></div>
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#access-cloud">2.1 Cloud access</a></div>
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#access-local">2.2 Local access</a></div>
         </div>
       </div>
-      <div class="nv collapsed">
+      <div class="nv">
         <div class="navrow"><span class="caret">▾</span><a class="item" href="#reading">3. Dashboard guide</a></div>
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#read-live">3.1 Car Live tab</a></div>
@@ -388,15 +391,21 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
   <div class="cat" data-cat="op">
     <div class="catrow"><div class="grp go">🐙 For maintainers · install &amp; run</div></div>
     <div class="kids">
-      <div class="nv collapsed">
+      <div class="nv">
         <div class="navrow"><span class="caret">▾</span><a class="item" href="#install">4. Installation</a></div>
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#install-steps">4.1 Get the project</a></div>
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#install-env">4.2 Configure .env</a></div>
-          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#install-cloud">4.3 Cloud extras</a></div>
+          <div class="nv">
+            <div class="navrow"><span class="caret">▾</span><a class="item sub" href="#install-cloud">4.3 Cloud extras</a></div>
+            <div class="kids">
+              <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub2" href="#install-tfvars">4.3.1 Configure tfvars</a></div>
+              <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub2" href="#install-admin">4.3.2 Admin script</a></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="nv collapsed">
+      <div class="nv">
         <div class="navrow"><span class="caret">▾</span><a class="item" href="#deployment">5. Deployment</a></div>
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-terraform">5.1 Cloud · Terraform</a></div>
@@ -405,7 +414,7 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-hybrid">5.4 Hybrid</a></div>
         </div>
       </div>
-      <div class="nv collapsed">
+      <div class="nv">
         <div class="navrow"><span class="caret">▾</span><a class="item" href="#maintenance">6. Operations &amp; security</a></div>
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#maint-ops">6.1 Operating · tuna</a></div>
@@ -419,14 +428,21 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
   <div class="cat" data-cat="tech">
     <div class="catrow"><div class="grp gt">🐋 For developers · how it works</div></div>
     <div class="kids">
-      <div class="nv collapsed">
+      <div class="nv">
         <div class="navrow"><span class="caret">▾</span><a class="item" href="#services">7. Services</a></div>
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#svc-mosquitto">7.1 Mosquitto · broker</a></div>
-          <div class="nv collapsed">
+          <div class="nv">
             <div class="navrow"><span class="caret">▾</span><a class="item sub" href="#svc-nodered">7.2 Node-RED · pipeline</a></div>
             <div class="kids">
-              <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub2" href="#inputflows">7.2.1 Input flows &amp; data input</a></div>
+              <div class="nv">
+                <div class="navrow"><span class="caret">▾</span><a class="item sub2" href="#inputflows">7.2.1 Input flows &amp; data input</a></div>
+                <div class="kids">
+                  <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub3" href="#feed-mqtt">7.2.1.1 Live MQTT</a></div>
+                  <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub3" href="#feed-csv">7.2.1.2 CSV import</a></div>
+                  <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub3" href="#serial">7.2.1.3 Serial</a></div>
+                </div>
+              </div>
               <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub2" href="#timestamps">7.2.2 Timestamping</a></div>
               <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub2" href="#healing">7.2.3 Healing logic</a></div>
               <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub2" href="#generator">7.2.4 Test generator</a></div>
@@ -434,22 +450,22 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
           </div>
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#svc-flyway">7.3 Flyway · migrations</a></div>
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#svc-postgres">7.4 PostgreSQL · database</a></div>
-          <div class="nv collapsed">
+          <div class="nv">
             <div class="navrow"><span class="caret">▾</span><a class="item sub" href="#svc-grafana">7.5 Grafana · visualization</a></div>
             <div class="kids">
               <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub2" href="#bitmasks">7.5.1 Fault decoding</a></div>
+              <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub2" href="#perm-edit">7.5.2 Editing dashboards</a></div>
             </div>
           </div>
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#svc-pgadmin">7.6 pgAdmin · inspection</a></div>
         </div>
       </div>
-      <div class="nv collapsed">
+      <div class="nv">
         <div class="navrow"><span class="caret">▾</span><a class="item" href="#infra">8. Infrastructure (Terraform)</a></div>
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#infra-modules">8.1 The four modules</a></div>
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#infra-boot">8.2 First-boot script</a></div>
-          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#infra-security">8.3 Security model</a></div>
-          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#infra-vars">8.4 Variables &amp; lifecycle</a></div>
+          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#infra-vars">8.3 Variables &amp; lifecycle</a></div>
         </div>
       </div>
     </div>
@@ -460,7 +476,7 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
     <div class="catrow"><div class="grp">Reference</div></div>
     <div class="kids">
       <div class="navrow leaf"><span class="caret ghost">•</span><a class="item" href="#troubleshooter">9. Guided troubleshooter</a></div>
-      <div class="nv collapsed">
+      <div class="nv">
         <div class="navrow"><span class="caret">▾</span><a class="item" href="#playground">10. 🧪 Playground</a></div>
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#pg-convert">10.1 Conversion · motion</a></div>
@@ -482,7 +498,7 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
 <div class="hero">
   <div class="sub">RAPIDAMENTE · EV RACE TELEMETRY</div>
   <h2>TelemeTuna v1.1</h2>
-  <p><b style="color:#fff">Feed the tuna every frame, clean telemetry wins the game.</b> TelemeTuna catches the radio stream off the Rapidamente electric race car, repairs what the radio mangled, logs everything it touched, and turns it into live dashboards the whole team can open from anywhere.</p>
+  <p><b style="color:#fff">Feed the tuna every frame, clean telemetry wins the game.</b> TelemeTuna is built with the Rapidamente electric race car in mind, but works with any car that streams similar telemetry. It catches the radio stream off the car, repairs what the radio mangled, logs everything it touched, and turns it into live dashboards the whole team can open from anywhere.</p>
   <div class="paths">
     <a class="path pv" href="#access"><b>🐠 I just want to watch</b><span>No install. Get the links, log in, read the dashboard properly.</span></a>
     <a class="path po" href="#install"><b>🐙 I'm setting it up</b><span>Install, deploy to the cloud, feed data in, keep it healthy.</span></a>
@@ -620,12 +636,18 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
       <tr><td>🗄 <b>pgAdmin</b> — raw database browser</td><td><code>http://&lt;server-ip&gt;:5051</code></td><td>No — maintainers/devs only (needs a login)</td></tr>
     </table></div>
   </div>
+  <div class="note"><b>Optional AWS access — not needed just to watch.</b> Viewing the dashboards needs nothing but the Grafana link. But if you're on the Rapidamente team and want a window into AWS itself, ask an <b>operator</b> to set you up with a read-only role (entirely optional):
+    <ul style="margin:8px 0 0">
+      <li><b>Viewer</b> — read-only view of <i>all</i> the server's AWS activity (instances, logs, the console). Look, never touch.</li>
+      <li><b>Finance Team</b> — sees <i>only</i> the billing / money-spent side, nothing else.</li>
+    </ul>
+    Once granted you sign in via SSO — but neither role is required for normal dashboard viewing.</div>
   <h3 id="access-local">2.2 🏠 If your team runs it locally (one PC in the pit)</h3>
   <div class="card">
     <h4>Two conditions, in order:</h4>
     <ol>
       <li>📶 <b>Join the same Wi-Fi / hotspot as the host PC.</b> A device on a different network can't reach it.</li>
-      <li>📍 <b>Ask for the host PC's IP on that network</b> — something like <code>192.168.1.50</code> — and open Grafana at <code>http://192.168.1.50:3001</code> (anonymous viewing, no login).</li>
+      <li>📍 <b>Ask for the host PC's IP on that network</b> — something like <code>192.168.1.50</code> — and open Grafana at <code>http://&lt;host-ip&gt;:3001</code> (anonymous viewing, no login).</li>
     </ol>
   </div>
   <div class="note green"><b>Which setup am I on?</b> An address starting with <code>192.168.</code> or <code>10.</code> means local (same-Wi-Fi rule applies). Anything else is the cloud — reachable from anywhere.</div>
@@ -808,21 +830,63 @@ code .                 # (optional) open in VS Code to edit .env</code></pre>
 
   <h3 id="install-cloud">4.3 Cloud extras — Terraform path only <span class="pill" style="color:var(--dim);border-color:var(--line2)">skip for local</span></h3>
   <p>Two setup steps before you can deploy to AWS in <a href="#deploy-terraform">§5.1</a>.</p>
-  <h4>① Configure <code>terraform.tfvars</code> <span class="pill ok">optional</span></h4>
+  <h4 id="install-tfvars">4.3.1 · Configure <code>terraform.tfvars</code> <span class="pill ok">optional</span></h4>
   <p>Every variable has a working default, so a bare <code>terraform apply</code> already builds a server. Override only what you want — most teams set just the three passwords (and maybe <code>admin_cidr</code>).</p>
   <pre><code>cd infrastructure
 cp terraform.tfvars.example terraform.tfvars
 code .                 # edit terraform.tfvars</code></pre>
-  <div class="card"><h4><code>postgres_password</code> · <code>grafana_admin_password</code> · <code>pgadmin_password</code> <span class="pill err">set these</span></h4><div class="big">The three logins (database · Grafana editing · pgAdmin). Use strong, unique values — they're stored <b>encrypted</b> in AWS SSM Parameter Store and written into the box's <code>.env</code> at boot, never committed. Realistically the only values you <i>must</i> change.</div></div>
-  <div class="card"><h4><code>admin_cidr</code> — who can reach the open ports</h4><div class="big">An IP range (CIDR form) allowed through the firewall to Grafana / Node-RED / pgAdmin / MQTT.
-    <ul style="margin:8px 0 0">
-      <li><b>Lock it to you:</b> run <code>curl ifconfig.me</code>, then set e.g. <code>203.0.113.5/32</code> — only your IP gets in.</li>
-      <li><b>Open to anywhere:</b> <code>0.0.0.0/0</code> lets anyone with the address connect — simplest for a roaming team or a pit on changing Wi-Fi. Fine for a prototype; just know the dashboards and broker are then publicly reachable (pair with MQTT auth/TLS if that worries you). The example file already ships <code>0.0.0.0/0</code>.</li>
-    </ul></div></div>
-  <div class="card"><h4><code>aws_region</code></h4><div class="big">Which AWS region to build in. Default <code>ap-southeast-7</code> (Asia Pacific · Bangkok) — change to whatever's nearest your team.</div></div>
-  <div class="card"><h4><code>instance_type</code> · <code>root_volume_size</code> · <code>data_volume_size</code></h4><div class="big">Server size and disks. Defaults <code>t3.small</code> / <code>20</code> GB / <code>5</code> GB are plenty — a 2-hour session is only a few MB. (gp3 disks can grow later, never shrink.)</div></div>
-  <div class="card"><h4>Everything else <span class="pill ok">leave default</span></h4><div class="big"><code>project</code> / <code>environment</code> (naming + the SSM path), <code>repo_url</code>, and the non-secret <code>postgres_user</code> / <code>postgres_db</code> / <code>grafana_admin_user</code> / <code>pgadmin_email</code> all have sensible defaults — only touch them if you're renaming or forking.</div></div>
-  <h4>② Run the admin script (once)</h4>
+  <p style="font-size:13.5px;color:var(--dim)">You normally set only the three passwords (and <code>admin_cidr</code>) — everything else has a working default. Each variable, one by one:</p>
+
+  <h4 style="font-size:14px;color:#fff;margin:16px 0 6px">Passwords <span class="pill err">set these</span></h4>
+  <div class="tablewrap"><table>
+    <tr><th style="width:34%">Variable</th><th>What it is</th></tr>
+    <tr><td><code>postgres_password</code></td><td>Password for the PostgreSQL database.</td></tr>
+    <tr><td><code>grafana_admin_password</code></td><td>Password to log in to Grafana and <i>edit</i> dashboards (viewers watch anonymously, no login).</td></tr>
+    <tr><td><code>pgadmin_password</code></td><td>Password to log in to pgAdmin.</td></tr>
+  </table></div>
+  <p style="font-size:12.5px;color:var(--faint)">All three are stored <b>encrypted</b> in AWS SSM Parameter Store and written into the box's <code>.env</code> at boot — never committed to git.</p>
+
+  <h4 style="font-size:14px;color:#fff;margin:16px 0 6px">Access &amp; region</h4>
+  <div class="tablewrap"><table>
+    <tr><th style="width:34%">Variable</th><th>What it is</th></tr>
+    <tr><td><code>admin_cidr</code> <span class="pill err">required</span></td><td>Who can reach the open ports, as a CIDR range. Lock it to you (<code>curl ifconfig.me</code> → e.g. <code>203.0.113.5/32</code>), or use <code>0.0.0.0/0</code> to allow anyone (simplest for a roaming team — but the dashboards and broker are then publicly reachable; pair with MQTT auth/TLS if that worries you). The example ships <code>0.0.0.0/0</code>.</td></tr>
+    <tr><td><code>aws_region</code></td><td>Which AWS region to build in. Default <code>ap-southeast-7</code> (Asia Pacific · Bangkok).</td></tr>
+  </table></div>
+
+  <h4 style="font-size:14px;color:#fff;margin:16px 0 6px">Instance &amp; disks</h4>
+  <div class="tablewrap"><table>
+    <tr><th style="width:34%">Variable</th><th>What it is</th></tr>
+    <tr><td><code>instance_type</code></td><td>EC2 server size. Default <code>t3.small</code> — plenty for this workload.</td></tr>
+    <tr><td><code>root_volume_size</code></td><td>Size (GB) of the OS/root disk. Default <code>20</code>.</td></tr>
+    <tr><td><code>data_volume_size</code></td><td>Size (GB) of the dedicated Postgres data disk. Default <code>5</code> (a 2-hour session ≈ a few MB; gp3 can grow later, never shrink).</td></tr>
+  </table></div>
+
+  <h4 style="font-size:14px;color:#fff;margin:16px 0 6px">Snapshots (backups)</h4>
+  <div class="tablewrap"><table>
+    <tr><th style="width:34%">Variable</th><th>What it is</th></tr>
+    <tr><td><code>snapshot_state</code></td><td><code>ENABLED</code> or <code>DISABLED</code>. Set <code>DISABLED</code> to pause new snapshots (existing snapshots, the policy, and the Recycle Bin are kept); <code>ENABLED</code> to resume. Default <code>ENABLED</code>.</td></tr>
+    <tr><td><code>snapshot_cron</code></td><td>When to snapshot the Postgres volume (DLM cron, UTC). Default <code>cron(0 17 ? * * *)</code> — 17:00 UTC = midnight in Bangkok.</td></tr>
+    <tr><td><code>standard_retain_count</code></td><td>How many of the most recent snapshots to keep before deletion (then Recycle Bin). Default <code>30</code>.</td></tr>
+    <tr><td><code>recycle_bin_retention_days</code></td><td>Days a deleted snapshot stays recoverable in the AWS Recycle Bin. Default <code>7</code>.</td></tr>
+  </table></div>
+
+  <h4 style="font-size:14px;color:#fff;margin:16px 0 6px">App credentials — non-secret <span class="pill ok">leave default</span></h4>
+  <div class="tablewrap"><table>
+    <tr><th style="width:34%">Variable</th><th>What it is</th></tr>
+    <tr><td><code>postgres_user</code></td><td>PostgreSQL username. Default <code>user</code>.</td></tr>
+    <tr><td><code>postgres_db</code></td><td>PostgreSQL database name. Default <code>telemetry</code>.</td></tr>
+    <tr><td><code>grafana_admin_user</code></td><td>Grafana admin username. Default <code>user</code>.</td></tr>
+    <tr><td><code>pgadmin_email</code></td><td>pgAdmin login email (only has to <i>look</i> like an email). Default <code>admin@admin.com</code>.</td></tr>
+  </table></div>
+
+  <h4 style="font-size:14px;color:#fff;margin:16px 0 6px">Naming &amp; repo <span class="pill ok">leave default</span></h4>
+  <div class="tablewrap"><table>
+    <tr><th style="width:34%">Variable</th><th>What it is</th></tr>
+    <tr><td><code>project</code></td><td>Project name — used for resource naming/tagging and the SSM path. Default <code>telemetuna</code>.</td></tr>
+    <tr><td><code>environment</code></td><td>Environment name (e.g. <code>prod</code>) — used for naming/tagging and the SSM path. Default <code>prod</code>.</td></tr>
+    <tr><td><code>repo_url</code></td><td>Git URL of the app repo the box clones at boot. Default the <code>Rapidamente-TelemeTuna</code> repo.</td></tr>
+  </table></div>
+  <h4 id="install-admin">4.3.2 · Run the admin script (once)</h4>
   <p>This installs the AWS CLI v2, the SSM plugin, the three SSO profiles, and the friendly <code>tuna-*</code> commands — so you never hand-install AWS tooling. Safe to re-run. On <b>Windows</b> run it in <b>Git Bash</b> (not PowerShell/CMD).</p>
   <pre><code>./scripts/install-tuna-shortcuts.sh
 source ~/.zshrc        # macOS · use ~/.bashrc on Linux / Git Bash</code></pre>
@@ -899,7 +963,7 @@ docker compose -f docker-compose.yaml -f docker-compose.production.yaml up -d</c
       </table></div></li>
     <li>Point the ESP32 at the public IP, port <b>1884</b> (any internet Wi-Fi — a phone hotspot works), and enable the provider's automatic <b>disk snapshots</b> of the database volume.</li>
   </ol>
-  <div class="note"><b>Matching Terraform's hardening by hand (recommended):</b> require <b>IMDSv2</b>, give the box a <b>least-privilege role</b> instead of long-lived keys, and prefer <b>SSM Session Manager</b> over an open port 22. Terraform does all three automatically in <a href="#deploy-terraform">5.1</a> — see <a href="#infra-security">§8 security model</a>.</div>
+  <div class="note"><b>Matching Terraform's hardening by hand (recommended):</b> require <b>IMDSv2</b>, give the box a <b>least-privilege role</b> instead of long-lived keys, and prefer <b>SSM Session Manager</b> over an open port 22. Terraform does all three automatically in <a href="#deploy-terraform">5.1</a>.</div>
 
   <h3 id="deploy-local">5.3 💻 Local — one PC</h3>
   <p>Run the whole platform on one machine (a pit laptop) with the <b>normal</b> compose — no external volume, nothing cloud. Best for development, testing, and zero-connectivity tracks.</p>
@@ -916,6 +980,11 @@ docker compose logs -f     # live logs (add 'flyway' to confirm the DB got built
 docker compose down        # stop (keeps your data)</code></pre>
   <div class="note"><b>pgAdmin first-run:</b> <i>Servers → Register → Server</i> → Connection: Host <code>postgresdb</code>, Port <code>5432</code> (the inside-Docker address, not <code>localhost:5433</code>), plus your <code>POSTGRES_*</code> values. Tick <b>Save password</b>.</div>
   <p><b>Inputs:</b> live MQTT (point the ESP32 at the host's LAN IP, port <code>1884</code>), CSV replay, and — uniquely to local — a <b>direct USB serial</b> link to the receiver. How to feed each: <a href="#inputflows">§7.2.1</a>.</p>
+  <div class="note orange"><b>Running locally with live data? Two things to get right:</b>
+    <ul style="margin:8px 0 0">
+      <li><b>Keep the host awake for the whole session.</b> Your PC <i>is</i> the server — there's no 24/7 cloud box behind it. If it sleeps, hibernates, or shuts down mid-collection, the broker and pipeline stop and those frames are gone. Disable sleep and stay on mains power until you're done.</li>
+      <li><b>Point the ESP32 at the right broker.</b> The receiver has to publish to <i>this</i> host — set its MQTT target to the host's <b>LAN IP</b> on port <code>1884</code>. If it's still aimed at the cloud address (or an old one), nothing arrives. (On cloud or hybrid, aim it at the server's IP instead.)</li>
+    </ul></div>
 
   <h3 id="deploy-hybrid">5.4 🔀 Hybrid — local stack, cloud broker</h3>
   <p>Dashboards and database run locally (normal compose), but the MQTT broker lives in the cloud — for when the car needs a reachable broker yet the pit machine sits behind a strict network.</p>
@@ -996,7 +1065,7 @@ exit                                  # leave the SSM session</code></pre>
   <h2>7. Services</h2>
   <div class="rule"></div>
   <p class="lead">Six services, one Docker network. Data enters through Mosquitto, gets processed by Node-RED, lands in PostgreSQL (whose schema Flyway builds), and comes out through Grafana and pgAdmin. Each has its own section:</p>
-  <div class="note orange"><b>Golden rule: develop locally, never on the cloud box.</b> Do all your editing on your own machine with the plain dev stack — <code>docker compose up -d</code> — then <b>commit and push</b>, and ship to the server with a <b>pull + rebuild</b> (<code>sudo /opt/Rapidamente-TelemeTuna/update-telemetuna.sh</code>, or <code>git pull</code> on the box). Editing flows, dashboards, or code <i>directly</i> on the cloud instance skips version control and is wiped on the next rebuild/re-provision. The dashboard/flow round-trip is spelled out in <a href="#perm-edit">§12.4</a>.</div>
+  <div class="note orange"><b>Golden rule: develop locally, never on the cloud box.</b> Do all your editing on your own machine with the plain dev stack — <code>docker compose up -d</code> — then <b>commit and push</b>, and ship to the server with a <b>pull + rebuild</b> (<code>sudo /opt/Rapidamente-TelemeTuna/update-telemetuna.sh</code>, or <code>git pull</code> on the box). Editing flows, dashboards, or code <i>directly</i> on the cloud instance skips version control and is wiped on the next rebuild/re-provision. The dashboard/flow round-trip is spelled out in <a href="#perm-edit">§7.5.2</a>.</div>
   <div class="cards">
     <a class="card" href="#svc-mosquitto" style="border-color:var(--tuna)"><h4>Mosquitto</h4><div class="big">Message broker — the MQTT post office, and the QoS 2 detail.</div></a>
     <a class="card" href="#svc-nodered" style="border-color:var(--ok)"><h4>Node-RED</h4><div class="big">The pipeline — 10 stations, input flows, timestamping, healing, the test generator.</div></a>
@@ -1161,7 +1230,7 @@ exit                                  # leave the SSM session</code></pre>
   <h4 style="font-size:16px;color:#fff;margin-top:22px">Feeding data in — the three ways</h4>
   <p>The flows above are the roads in; here is how you actually push data down them. Live MQTT is the racing default, CSV replays an old session, and serial is the local USB option.</p>
 
-  <p id="feed-mqtt" style="margin-bottom:6px"><b>① Live MQTT — the racing path.</b> Node-RED always listens on topic <code>car_telemetry</code>. The receiver ESP32 publishes 15-field frames to the broker (cloud IP or local host, <b>host port 1884</b>); they flow in and get stamped on arrival — nothing to click. Hand-test from any machine:</p>
+  <p id="feed-mqtt" style="margin-bottom:6px"><b>7.2.1.1 · Live MQTT — the racing path.</b> Node-RED always listens on topic <code>car_telemetry</code>. The receiver ESP32 publishes 15-field frames to the broker (cloud IP or local host, <b>host port 1884</b>); they flow in and get stamped on arrival — nothing to click. Hand-test from any machine:</p>
   <pre><code>mosquitto_pub -h &lt;server-ip&gt; -p 1884 -t car_telemetry \
   -m "15000,-8000,19660,12000,D,21357,11644,0,0,0,0,0,1,0,1"</code></pre>
   <div class="note"><b>1884 or 1883?</b> External publishers (the ESP32, <code>mosquitto_pub</code>) connect to the <b>host</b> port <code>1884</code>. Inside Docker the broker listens on <code>1883</code>, so Node-RED's own MQTT node uses <code>mosquitto:1883</code> — Compose maps <code>1884:1883</code> between them. More in <a href="#svc-mosquitto">7.1 Mosquitto</a>.</div>
@@ -1169,7 +1238,7 @@ exit                                  # leave the SSM session</code></pre>
   <div class="fix"><b>No data appearing at all:</b> Connection fish first (Pipeline Health tab) → run the <a href="#generator">test generator</a> to isolate pipeline vs source → check <code>event_logs</code> for <span class="pill fd">FD</span> entries.</div>
   <div class="fix"><b>Fish says Disconnected but the car is sending:</b> ESP32 broker address (cloud/host IP, <b>port 1884</b>)? Topic exactly <code>car_telemetry</code>? Port 1884 open in the firewall / security group?</div>
 
-  <p id="feed-csv" style="margin-bottom:6px"><b>② CSV import — replays.</b> Two ideas: <b>drop the file in</b>, then <b>point Node-RED at it</b>. Both CSV types need a timestamp as the first column (16 columns total):</p>
+  <p id="feed-csv" style="margin-bottom:6px"><b>7.2.1.2 · CSV import — replays.</b> Two ideas: <b>drop the file in</b>, then <b>point Node-RED at it</b>. Both CSV types need a timestamp as the first column (16 columns total):</p>
   <ul>
     <li><b>Raw CSV</b> — timestamp + 15 raw fields → full cleaning pipeline (original times preserved).</li>
     <li><b>Processed CSV</b> — timestamp + 15 already-converted fields → straight to the database (no double-cleaning, no re-healing).</li>
@@ -1187,7 +1256,7 @@ exit                                  # leave the SSM session</code></pre>
   <div class="fix"><b>CSV rows all dropped:</b> the timestamp column is missing — 16 columns required.</div>
   <div class="fix"><b>CSV import added no rows:</b> those timestamps already exist — duplicate protection (<a href="#svc-postgres">why</a>). Re-importing the same file is always safe.</div>
 
-  <p id="serial" style="margin-bottom:6px"><b>③ Serial connection — local USB, no MQTT.</b> For when the LoRa receiver is plugged in by USB. Docker containers can't reach USB ports, so Node-RED must run <b>natively</b> (local deployment only). The serial nodes in the committed flow are disabled placeholders; the active local flow is provided separately.</p>
+  <p id="serial" style="margin-bottom:6px"><b>7.2.1.3 · Serial connection — local USB, no MQTT.</b> For when the LoRa receiver is plugged in by USB. Docker containers can't reach USB ports, so Node-RED must run <b>natively</b> (local deployment only). The serial nodes in the committed flow are disabled placeholders; the active local flow is provided separately.</p>
   <ol>
     <li><b>Install Node.js</b> (LTS) from <a href="https://nodejs.org">nodejs.org</a>; verify <code>node --version</code> &amp; <code>npm --version</code>.</li>
     <li><b>Install Node-RED:</b> <code>npm install -g --unsafe-perm node-red</code>. Run <code>node-red</code> once, stop it (Ctrl+C) — creates <code>~/.node-red</code>.</li>
@@ -1377,6 +1446,19 @@ older than 5 minutes    → Disconnected &lt;×)))&gt;&lt;     (long dead, faded
     <tr><td>15</td><td>Bleeder Resistor Load (&gt;87%)</td><td>Ballast circuit overloaded</td></tr>
   </table></div></div></details>
   </div>
+
+  <div class="subtopic" id="perm-edit">
+  <h4 style="font-size:17px;color:var(--tuna2)">7.5.2 Editing dashboards — local dev first</h4>
+  <div class="note"><b>Never live-edit production Grafana.</b> Grafana re-provisions its dashboards from the repo on <i>every</i> start, so a change made directly in production is lost on the next rebuild. The safe workflow keeps it versioned in git:</div>
+  <ol>
+    <li>Bring up your <b>local dev stack</b> (<code>docker compose up -d</code>) and open Grafana at <code>localhost:3001</code>.</li>
+    <li><b>Log in</b> with the Grafana admin creds from your <code>.env</code> and edit the dashboard there.</li>
+    <li><b>Export</b> the dashboard JSON (Dashboard settings → JSON Model) and save it over <code>services/grafana/provisioning/dashboards/car-telemetry.json</code>.</li>
+    <li><b>Commit</b> and ship with <code>update-telemetuna.sh</code> — production re-provisions from the file.</li>
+  </ol>
+  <div class="note orange"><b>Editing annotations? Patch the <code>annotations</code> block — don't overwrite the file.</b> When you copy an annotation out of Grafana, the clipboard holds <i>only that one piece</i>, never the whole dashboard. So in <code>car-telemetry.json</code> replace just the matching entry inside the <code>"annotations"</code> section — paste it over the <b>entire block</b> and you'll wipe every panel. (Whole-dashboard changes still go through the <i>JSON Model</i> export in step 3.)</div>
+  <p>Same idea for the <b>Node-RED pipeline</b>: edit on dev, the flow saves into <code>services/nodered/flows.json</code>, commit, ship. CSV imports are a trusted-party-only task — see <a href="#feed-csv">§7.2.1</a>.</p>
+  </div>
   </div>
 
   <!-- ---------- PGADMIN ---------- -->
@@ -1474,22 +1556,8 @@ GROUP BY field ORDER BY count DESC;</code></pre>
   <div class="note"><b>Self-starting by design.</b> Every service uses <code>restart: unless-stopped</code>, so the stack comes back by itself after a reboot or stop/start without re-running the script. Two helper scripts stay on the box: <code>sudo /opt/Rapidamente-TelemeTuna/start-telemetuna.sh</code> (bring it up) and <code>sudo /opt/Rapidamente-TelemeTuna/update-telemetuna.sh</code> (<code>git pull</code> + rebuild — to ship app updates).</div>
   </div>
 
-  <div class="subtopic" id="infra-security">
-  <h4 style="font-size:17px;color:var(--tuna2)">8.3 Security model</h4>
-  <div class="tablewrap"><table>
-    <tr><th>Control</th><th>How</th></tr>
-    <tr><td><b>No SSH</b></td><td>No port 22; shell is SSM Session Manager only — nothing to leak, fully audited.</td></tr>
-    <tr><td><b>IMDSv2 required</b></td><td><code>http_tokens = "required"</code> blocks a common metadata-theft vector.</td></tr>
-    <tr><td><b>Least-privilege IAM</b></td><td>The instance can read only its own seven SSM parameters, and decrypt only via SSM.</td></tr>
-    <tr><td><b>Firewall scoped to you</b></td><td>Every ingress rule is limited to <code>admin_cidr</code> — keep it at your <code>/32</code>.</td></tr>
-    <tr><td><b>Encryption at rest</b></td><td>Both the root and data EBS volumes are encrypted.</td></tr>
-    <tr><td><b>Secrets off the repo</b></td><td>Passwords live in SSM (<code>SecureString</code>); the <code>.env</code> is built on the box at boot.</td></tr>
-    <tr><td><b>Tagging</b></td><td><code>default_tags</code> (Project/Environment/ManagedBy=Terraform) on every resource for cost tracking &amp; cleanup.</td></tr>
-  </table></div>
-  </div>
-
   <div class="subtopic" id="infra-vars">
-  <h4 style="font-size:17px;color:var(--tuna2)">8.4 Variables, outputs &amp; lifecycle</h4>
+  <h4 style="font-size:17px;color:var(--tuna2)">8.3 Variables, outputs &amp; lifecycle</h4>
   <p><b>Inputs</b> (<code>variables.tf</code>, set in <code>terraform.tfvars</code>): <code>aws_region</code> (<code>ap-southeast-7</code>), <code>project</code>/<code>environment</code> (naming + the SSM path), <code>admin_cidr</code> (required), <code>instance_type</code> (<code>t3.small</code>), <code>root_volume_size</code> (20), <code>data_volume_size</code> (5), <code>repo_url</code>, the four non-secret credentials, and the three secret passwords (<code>sensitive = true</code>).</p>
   <p><b>Outputs</b> (<code>terraform output</code>): <code>instance_id</code>, <code>public_ip</code> (the Elastic IP), and <code>grafana_url</code>.</p>
   <div class="note green"><b>Lifecycle.</b> <code>terraform plan</code> previews · <code>terraform apply</code> builds/updates · <code>terraform destroy</code> tears down — but releases the Elastic IP and, unless snapshotted, the data volume. For everyday pauses use <code>tuna-stop</code>/<code>tuna-start</code>. State and <code>*.tfvars</code> are gitignored and never committed.</div>
@@ -1635,6 +1703,7 @@ GROUP BY field ORDER BY count DESC;</code></pre>
   <div class="tablewrap"><table>
     <tr><th>Role</th><th>Sign in</th><th>What it can do</th><th>Typically</th></tr>
     <tr><td><b>Viewer</b></td><td><i>none needed to watch</i></td><td>Read-only AWS console view. <b>You don't even need this to watch dashboards.</b></td><td>most of the team</td></tr>
+    <tr><td><b>💰 Finance Team</b></td><td><i>SSO — AWS console</i></td><td>Read-only <b>billing / cost</b> view — <b>nothing else</b> (no servers, no data).</td><td>whoever tracks spend</td></tr>
     <tr><td><b>InstanceController</b></td><td><code>tuna-login-ic</code></td><td><b>Start &amp; stop the server only</b> — nothing else.</td><td>pit / race ops</td></tr>
     <tr><td><b>Operator</b></td><td><code>tuna-login-op</code></td><td>Everything day-to-day: start/stop <b>plus</b> SSM shell, logs, restart, run the stack.</td><td>whoever runs it</td></tr>
     <tr><td><b>Admin</b></td><td><code>tuna-login-ad</code></td><td>Full AWS admin: manage infrastructure, users, billing — everything.</td><td>the org admin</td></tr>
@@ -1645,13 +1714,15 @@ GROUP BY field ORDER BY count DESC;</code></pre>
   <div class="subtopic" id="perm-matrix">
   <h3>12.2 Capability matrix</h3>
   <div class="tablewrap"><table>
-    <tr><th>Capability</th><th>Viewer</th><th>InstanceController</th><th>Operator</th><th>Admin</th></tr>
-    <tr><td>Watch Grafana dashboards</td><td class="c-ok">&#10003; *</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td></tr>
-    <tr><td>Start / stop the server</td><td>—</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td></tr>
-    <tr><td>SSM shell into the box (<code>tuna-ssm</code>)</td><td>—</td><td>—</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td></tr>
-    <tr><td>Run / restart / logs / storage (SSM)</td><td>—</td><td>—</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td></tr>
-    <tr><td>Terraform plan / apply / destroy</td><td>—</td><td>—</td><td class="c-warn">&#10003; with AWS creds</td><td class="c-ok">&#10003;</td></tr>
-    <tr><td>Manage AWS users / billing / account</td><td>—</td><td>—</td><td>—</td><td class="c-ok">&#10003;</td></tr>
+    <tr><th></th><th></th><th></th><th colspan="2" style="text-align:center;color:var(--op);background:rgba(201,168,245,.14)">🐙 Maintainer</th><th></th></tr>
+    <tr><th>Capability</th><th>Viewer</th><th>💰 Finance Team</th><th>InstanceController</th><th>Operator</th><th>Admin</th></tr>
+    <tr><td>Watch Grafana dashboards</td><td class="c-ok">&#10003; *</td><td class="c-ok">&#10003; *</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td></tr>
+    <tr><td>See AWS billing / cost <span style="color:var(--faint);font-size:11px">(view only)</span></td><td>—</td><td class="c-ok">&#10003;</td><td>—</td><td>—</td><td class="c-ok">&#10003;</td></tr>
+    <tr><td>Start / stop the server</td><td>—</td><td>—</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td></tr>
+    <tr><td>SSM shell into the box (<code>tuna-ssm</code>)</td><td>—</td><td>—</td><td>—</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td></tr>
+    <tr><td>Run / restart / logs / storage (SSM)</td><td>—</td><td>—</td><td>—</td><td class="c-ok">&#10003;</td><td class="c-ok">&#10003;</td></tr>
+    <tr><td>Terraform plan / apply / destroy</td><td>—</td><td>—</td><td>—</td><td class="c-warn">&#10003; with AWS creds</td><td class="c-ok">&#10003;</td></tr>
+    <tr><td>Manage AWS users / billing / account</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="c-ok">&#10003;</td></tr>
   </table></div>
   <p style="font-size:12.5px;color:var(--faint)">* Watching needs <b>no AWS role at all</b> — just the Grafana link. The Viewer role is only for read-only access to the AWS console itself.</p>
   </div>
@@ -1669,17 +1740,6 @@ GROUP BY field ORDER BY count DESC;</code></pre>
   </table></div>
   </div>
 
-  <div class="subtopic" id="perm-edit">
-  <h3>12.4 Editing dashboards — local dev first</h3>
-  <div class="note"><b>Never live-edit production Grafana.</b> Grafana re-provisions its dashboards from the repo on <i>every</i> start, so a change made directly in production is lost on the next rebuild. The safe workflow keeps it versioned in git:</div>
-  <ol>
-    <li>Bring up your <b>local dev stack</b> (<code>docker compose up -d</code>) and open Grafana at <code>localhost:3001</code>.</li>
-    <li><b>Log in</b> with the Grafana admin creds from your <code>.env</code> and edit the dashboard there.</li>
-    <li><b>Export</b> the dashboard JSON (Dashboard settings → JSON Model) and save it over <code>services/grafana/provisioning/dashboards/car-telemetry.json</code>.</li>
-    <li><b>Commit</b> and ship with <code>update-telemetuna.sh</code> — production re-provisions from the file.</li>
-  </ol>
-  <p>Same idea for the <b>Node-RED pipeline</b>: edit on dev, the flow saves into <code>services/nodered/flows.json</code>, commit, ship. CSV imports are a trusted-party-only task — see <a href="#feed-csv">&sect;5.2</a>.</p>
-  </div>
 </section>
 
 <!-- ================= REFERENCE · CHANGELOG ================= -->
@@ -1737,8 +1797,8 @@ GROUP BY field ORDER BY count DESC;</code></pre>
 <script>
 /* sidebar toggle (desktop collapse + mobile drawer) + collapsible nav + persistence */
 const isMobile=()=>window.matchMedia('(max-width:920px)').matches;
-const LS={get:(k,d)=>{try{const v=localStorage.getItem('tt_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}},
-          set:(k,v)=>{try{localStorage.setItem('tt_'+k,JSON.stringify(v));}catch(e){}}};
+const LS={get:(k,d)=>{try{const v=localStorage.getItem('tt4_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}},
+          set:(k,v)=>{try{localStorage.setItem('tt4_'+k,JSON.stringify(v));}catch(e){}}};
 document.getElementById('burger').onclick=()=>{
   if(isMobile())document.body.classList.toggle('navopen');
   else{document.body.classList.toggle('navclosed');LS.set('navclosed',document.body.classList.contains('navclosed'));}
@@ -1769,6 +1829,7 @@ function keepInView(a){const nav=document.getElementById('nav');if(!nav||!a)retu
   if(ar.top<nr.top+14)nav.scrollTop+=ar.top-nr.top-14;else if(ar.bottom>nr.bottom-14)nav.scrollTop+=ar.bottom-nr.bottom+14;}
 let _lastIdx=-1;
 const spy=()=>{let idx=0;secs.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<150)idx=i;});
+  if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4)idx=items.length-1;
   items.forEach((a,i)=>a.classList.toggle('active',i===idx));
   if(items[idx]){expandActive(items[idx]);if(idx!==_lastIdx){_lastIdx=idx;if(idx===0)document.getElementById('nav').scrollTo({top:0,behavior:'smooth'});else keepInView(items[idx]);}}
   document.getElementById('btt').style.display=window.scrollY>600?'block':'none';};
