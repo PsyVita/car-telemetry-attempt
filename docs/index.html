@@ -410,8 +410,11 @@ td.c-bad{background:rgba(255,94,94,.14)!important}
         <div class="kids">
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-terraform">5.1 Cloud · Terraform</a></div>
           <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-cloud">5.2 Cloud · by hand</a></div>
-          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-local">5.3 Local</a></div>
-          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-hybrid">5.4 Hybrid</a></div>
+          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-hybrid">5.3 Hybrid · cloud broker</a></div>
+          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-hybrid-localbroker">5.4 Hybrid · local broker</a></div>
+          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-hybrid-serial">5.5 Hybrid · serial</a></div>
+          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-local">5.6 Local · MQTT</a></div>
+          <div class="navrow leaf"><span class="caret ghost">•</span><a class="item sub" href="#deploy-local-serial">5.7 Local · serial</a></div>
         </div>
       </div>
       <div class="nv">
@@ -899,21 +902,25 @@ source ~/.zshrc        # macOS · use ~/.bashrc on Linux / Git Bash</code></pre>
 <section id="deployment" class="z-op">
   <h2>5. Deployment</h2>
   <div class="rule"></div>
-  <p class="lead">Four ways to run what you set up in <a href="#install">§4</a>. The team default is <b>Terraform on AWS</b> — but the by-hand cloud build, a single local PC, and a hybrid are all fully supported.</p>
+  <p class="lead">How you run what you set up in <a href="#install">§4</a> is a mix of two choices — the <b>live input</b> (MQTT off the radio, or a USB serial link) and <b>where each piece runs</b> (local PC, AWS, or split). The table below lists every working combination; the team default is <b>Terraform on AWS</b>.</p>
 
-  <div class="note"><b>Which data inputs work where?</b> Live MQTT works on every deployment; CSV replay happens in Node-RED on the host; a direct USB serial link needs physical access to the machine, so it's local-only. <i>How</i> to actually feed each one lives with the developers: <a href="#inputflows">§7.2.1 Input flows &amp; data input</a>.</div>
+  <div class="note"><b>Every working combination.</b> Deployment comes down to the <b>live input</b> and <b>where each piece runs</b>. Six configurations cover it — <i>how</i> to feed each input lives with the developers in <a href="#inputflows">§7.2.1</a>.</div>
   <div class="tablewrap"><table>
-    <tr><th>Deployment</th><th>Live MQTT<br>(radio)</th><th>CSV replay</th><th>USB serial</th></tr>
-    <tr><td><b>5.1 Cloud · Terraform</b></td><td class="c-ok">✓</td><td class="c-ok">✓</td><td class="c-bad">✗ no USB on a cloud VM</td></tr>
-    <tr><td><b>5.2 Cloud · by hand</b></td><td class="c-ok">✓</td><td class="c-ok">✓</td><td class="c-bad">✗ no USB on a cloud VM</td></tr>
-    <tr><td><b>5.3 Local · one PC</b></td><td class="c-ok">✓</td><td class="c-ok">✓</td><td class="c-ok">✓</td></tr>
-    <tr><td><b>5.4 Hybrid</b></td><td class="c-ok">✓ via cloud broker</td><td class="c-ok">✓</td><td class="c-ok">✓</td></tr>
+    <tr><th>Combination</th><th>Live input</th><th>Where it runs</th><th>Dashboards reachable</th><th>Guide</th></tr>
+    <tr><td><b>Cloud · MQTT</b></td><td>MQTT</td><td>broker · Node-RED · DB · Grafana all on AWS</td><td class="c-ok">anywhere · public IP</td><td><a href="#deploy-terraform">5.1</a> / <a href="#deploy-cloud">5.2</a></td></tr>
+    <tr><td><b>Hybrid · cloud broker → local</b></td><td>MQTT</td><td>cloud broker · local Node-RED + DB + Grafana</td><td>same subnet (viewers)</td><td><a href="#deploy-hybrid">5.3</a></td></tr>
+    <tr><td><b>Hybrid · local broker → cloud</b></td><td>MQTT</td><td>local broker + Node-RED · cloud DB + Grafana</td><td class="c-ok">anywhere · public IP</td><td><a href="#deploy-hybrid-localbroker">5.4</a></td></tr>
+    <tr><td><b>Hybrid · serial → cloud</b></td><td>USB serial</td><td>local Node-RED (USB) · cloud DB + Grafana</td><td class="c-ok">anywhere · public IP</td><td><a href="#deploy-hybrid-serial">5.5</a></td></tr>
+    <tr><td><b>Local · MQTT</b></td><td>MQTT</td><td>local broker · everything on one PC</td><td>same subnet</td><td><a href="#deploy-local">5.6</a></td></tr>
+    <tr><td><b>Local · serial</b></td><td>USB serial</td><td>USB · everything on one PC (NR native)</td><td>same subnet</td><td><a href="#deploy-local-serial">5.7</a></td></tr>
   </table></div>
+  <p style="font-size:12px;color:var(--faint)"><b>CSV replay</b> works on all six (injected into Node-RED on the host). MQTT flexes to <i>every</i> local/cloud mix — Node-RED just follows the broker — so only <b>serial in the cloud</b> is impossible (no USB): the red cells in the serial diagram below.</p>
 
-  <div class="note"><b>📡 Ranges — what can reach what.</b> Deployment is really a networking choice: where the <b>MQTT broker</b> lives, and where the <b>Docker stack</b> (Grafana · Node-RED · database) lives — each can be local or cloud. <b>Local</b> = private IPs on the <b>same subnet</b>; <b>cloud</b> = a public IP reachable from anywhere.
+  <div class="note"><b>📡 Ranges — what can reach what.</b> Deployment is a networking choice, and it plays out differently for each live input. The rule underneath both: <b>local</b> means private IPs on the <b>same subnet</b>; <b>cloud</b> means a public IP reachable from anywhere. Green cells work, red can't — click a green cell to jump to its section.
+  <p style="font-size:12.5px;color:var(--dim);margin:16px 0 4px"><b>① Live MQTT</b> — the <b>broker</b> can be local or cloud, and so can the <b>database + Grafana</b>. Node-RED just follows the broker, so <b>all four mixes work</b>:</p>
   <div class="diagram">
     <svg viewBox="0 0 920 452" xmlns="http://www.w3.org/2000/svg">
-      <text x="528" y="22" fill="#4fc3f7" font-size="11" letter-spacing="2" text-anchor="middle">DOCKER STACK  ·  Grafana · Node-RED · database</text>
+      <text x="528" y="22" fill="#4fc3f7" font-size="11" letter-spacing="2" text-anchor="middle">DATABASE + GRAFANA  ·  where the dashboards live</text>
       <text x="335" y="56" fill="#d8e7f2" font-size="14" font-weight="600" text-anchor="middle">Local <tspan dx="4" fill="#5f7f96" font-weight="400" font-size="11.5">(this PC)</tspan></text>
       <text x="721" y="56" fill="#d8e7f2" font-size="14" font-weight="600" text-anchor="middle">Cloud <tspan dx="4" fill="#5f7f96" font-weight="400" font-size="11.5">(AWS)</tspan></text>
       <text x="22" y="252" fill="#4fc3f7" font-size="11" letter-spacing="2" text-anchor="middle" transform="rotate(-90 22 252)">MQTT BROKER</text>
@@ -926,46 +933,101 @@ source ~/.zshrc        # macOS · use ~/.bashrc on Linux / Git Bash</code></pre>
         <rect x="150" y="74" width="370" height="170" rx="11" fill="#102a40" stroke="#3ddc97" stroke-width="1.6"/>
         <circle cx="180" cy="106" r="14" fill="#12352b" stroke="#3ddc97" stroke-width="1.4"/>
         <text x="180" y="111" fill="#3ddc97" font-size="16" text-anchor="middle">&#10003;</text>
-        <text x="204" y="111" fill="#fff" font-size="14.5" font-weight="600">One shared subnet</text>
-        <text x="172" y="147" fill="#8fb0c6" font-size="11.5">The ESP32 and every viewer sit on the</text>
-        <text x="172" y="166" fill="#8fb0c6" font-size="11.5">same LAN — the receiver reaches the broker,</text>
-        <text x="172" y="185" fill="#8fb0c6" font-size="11.5">teammates reach the dashboards.</text>
-        <text x="172" y="223" fill="#4fc3f7" font-size="11.5" font-weight="600">→ §5.3 · Local, one PC</text>
+        <text x="204" y="111" fill="#fff" font-size="14.5" font-weight="600">All on one PC</text>
+        <text x="172" y="147" fill="#8fb0c6" font-size="11.5">Local broker + local Node-RED + local DB.</text>
+        <text x="172" y="166" fill="#8fb0c6" font-size="11.5">The ESP32 and all viewers share the subnet.</text>
+        <text x="172" y="185" fill="#8fb0c6" font-size="11.5">(Node-RED stays local to reach the broker.)</text>
+        <text x="172" y="223" fill="#4fc3f7" font-size="11.5" font-weight="600">→ §5.6 · Local · MQTT</text>
       </a>
 
-      <rect x="536" y="74" width="370" height="170" rx="11" fill="#201525" stroke="#ff5e5e" stroke-width="1.6" stroke-dasharray="6 4"/>
-      <circle cx="566" cy="106" r="14" fill="#3a1a1f" stroke="#ff5e5e" stroke-width="1.4"/>
-      <text x="566" y="111" fill="#ff5e5e" font-size="16" text-anchor="middle">&#10007;</text>
-      <text x="590" y="111" fill="#fff" font-size="14.5" font-weight="600">Impossible</text>
-      <text x="558" y="147" fill="#b0929a" font-size="11.5">A local broker lives on your private LAN.</text>
-      <text x="558" y="166" fill="#b0929a" font-size="11.5">A cloud stack — and its ESP32 — can never</text>
-      <text x="558" y="185" fill="#b0929a" font-size="11.5">reach into that subnet. No path exists.</text>
-      <text x="558" y="223" fill="#7a5b62" font-size="11.5" font-weight="600">— no deployment</text>
+      <a href="#deploy-hybrid-localbroker">
+        <rect x="536" y="74" width="370" height="170" rx="11" fill="#102a40" stroke="#3ddc97" stroke-width="1.6"/>
+        <circle cx="566" cy="106" r="14" fill="#12352b" stroke="#3ddc97" stroke-width="1.4"/>
+        <text x="566" y="111" fill="#3ddc97" font-size="16" text-anchor="middle">&#10003;</text>
+        <text x="590" y="111" fill="#fff" font-size="14.5" font-weight="600">Local broker &#8594; cloud</text>
+        <text x="558" y="147" fill="#8fb0c6" font-size="11.5">Local Node-RED reads the local broker and</text>
+        <text x="558" y="166" fill="#8fb0c6" font-size="11.5">writes to a cloud database — dashboards</text>
+        <text x="558" y="185" fill="#8fb0c6" font-size="11.5">in the cloud, open from anywhere.</text>
+        <text x="558" y="223" fill="#4fc3f7" font-size="11.5" font-weight="600">→ §5.4 · Hybrid</text>
+      </a>
 
       <a href="#deploy-hybrid">
         <rect x="150" y="260" width="370" height="170" rx="11" fill="#102a40" stroke="#3ddc97" stroke-width="1.6"/>
         <circle cx="180" cy="292" r="14" fill="#12352b" stroke="#3ddc97" stroke-width="1.4"/>
         <text x="180" y="297" fill="#3ddc97" font-size="16" text-anchor="middle">&#10003;</text>
-        <text x="204" y="297" fill="#fff" font-size="14.5" font-weight="600">Hybrid</text>
-        <text x="172" y="333" fill="#8fb0c6" font-size="11.5">ESP32 → cloud broker from anywhere (public</text>
-        <text x="172" y="352" fill="#8fb0c6" font-size="11.5">IP). Grafana + DB run on your PC, so only</text>
-        <text x="172" y="371" fill="#8fb0c6" font-size="11.5">the viewing machines share a subnet.</text>
-        <text x="172" y="409" fill="#4fc3f7" font-size="11.5" font-weight="600">→ §5.4 · Hybrid</text>
+        <text x="204" y="297" fill="#fff" font-size="14.5" font-weight="600">Cloud broker &#8594; local stack</text>
+        <text x="172" y="333" fill="#8fb0c6" font-size="11.5">The ESP32 hits a cloud broker; local</text>
+        <text x="172" y="352" fill="#8fb0c6" font-size="11.5">Node-RED pulls it down into a local DB.</text>
+        <text x="172" y="371" fill="#8fb0c6" font-size="11.5">Viewers share the subnet.</text>
+        <text x="172" y="409" fill="#4fc3f7" font-size="11.5" font-weight="600">→ §5.3 · Hybrid</text>
       </a>
 
       <a href="#deploy-terraform">
         <rect x="536" y="260" width="370" height="170" rx="11" fill="#102a40" stroke="#3ddc97" stroke-width="1.6"/>
         <circle cx="566" cy="292" r="14" fill="#12352b" stroke="#3ddc97" stroke-width="1.4"/>
         <text x="566" y="297" fill="#3ddc97" font-size="16" text-anchor="middle">&#10003;</text>
-        <text x="590" y="297" fill="#fff" font-size="14.5" font-weight="600">Anywhere</text>
-        <text x="558" y="333" fill="#8fb0c6" font-size="11.5">Broker and stack both have public IPs.</text>
-        <text x="558" y="352" fill="#8fb0c6" font-size="11.5">The ESP32 publishes and every viewer</text>
-        <text x="558" y="371" fill="#8fb0c6" font-size="11.5">connects from anywhere — no subnet rule.</text>
+        <text x="590" y="297" fill="#fff" font-size="14.5" font-weight="600">All on the cloud</text>
+        <text x="558" y="333" fill="#8fb0c6" font-size="11.5">Broker, Node-RED, database, Grafana all</text>
+        <text x="558" y="352" fill="#8fb0c6" font-size="11.5">on AWS. Reachable from anywhere —</text>
+        <text x="558" y="371" fill="#8fb0c6" font-size="11.5">the team default.</text>
         <text x="558" y="409" fill="#4fc3f7" font-size="11.5" font-weight="600">→ §5.1 / §5.2 · Cloud</text>
       </a>
     </svg>
   </div>
-  <p style="font-size:12px;color:var(--faint);margin:8px 0 0;text-align:center">Green cells work; the red one can't. Click a green cell to jump to that deployment method.</p>
+  <p style="font-size:12.5px;color:var(--dim);margin:18px 0 4px"><b>② USB serial</b> — where <b>Node-RED</b> (it opens the port) and the <b>rest of the stack</b> run:</p>
+  <div class="diagram">
+    <svg viewBox="0 0 920 452" xmlns="http://www.w3.org/2000/svg">
+      <text x="528" y="22" fill="#4fc3f7" font-size="11" letter-spacing="2" text-anchor="middle">REST OF THE STACK  ·  database · Grafana</text>
+      <text x="335" y="56" fill="#d8e7f2" font-size="14" font-weight="600" text-anchor="middle">Local <tspan dx="4" fill="#5f7f96" font-weight="400" font-size="11.5">(this PC)</tspan></text>
+      <text x="721" y="56" fill="#d8e7f2" font-size="14" font-weight="600" text-anchor="middle">Cloud <tspan dx="4" fill="#5f7f96" font-weight="400" font-size="11.5">(AWS)</tspan></text>
+      <text x="22" y="252" fill="#4fc3f7" font-size="11" letter-spacing="2" text-anchor="middle" transform="rotate(-90 22 252)">NODE-RED · reads the USB</text>
+      <text x="104" y="154" fill="#d8e7f2" font-size="14" font-weight="600" text-anchor="middle">Local</text>
+      <text x="104" y="171" fill="#8fb0c6" font-size="11" text-anchor="middle">native, on PC</text>
+      <text x="104" y="340" fill="#d8e7f2" font-size="14" font-weight="600" text-anchor="middle">Cloud</text>
+      <text x="104" y="357" fill="#8fb0c6" font-size="11" text-anchor="middle">on AWS</text>
+
+      <a href="#deploy-local-serial">
+        <rect x="150" y="74" width="370" height="170" rx="11" fill="#102a40" stroke="#3ddc97" stroke-width="1.6"/>
+        <circle cx="180" cy="106" r="14" fill="#12352b" stroke="#3ddc97" stroke-width="1.4"/>
+        <text x="180" y="111" fill="#3ddc97" font-size="16" text-anchor="middle">&#10003;</text>
+        <text x="204" y="111" fill="#fff" font-size="14.5" font-weight="600">All on one PC</text>
+        <text x="172" y="147" fill="#8fb0c6" font-size="11.5">Native Node-RED reads the USB and writes</text>
+        <text x="172" y="166" fill="#8fb0c6" font-size="11.5">to a local database; Grafana is local too.</text>
+        <text x="172" y="185" fill="#8fb0c6" font-size="11.5">Viewers share the subnet.</text>
+        <text x="172" y="223" fill="#4fc3f7" font-size="11.5" font-weight="600">→ §5.7 · Local · serial</text>
+      </a>
+
+      <a href="#deploy-hybrid-serial">
+        <rect x="536" y="74" width="370" height="170" rx="11" fill="#102a40" stroke="#3ddc97" stroke-width="1.6"/>
+        <circle cx="566" cy="106" r="14" fill="#12352b" stroke="#3ddc97" stroke-width="1.4"/>
+        <text x="566" y="111" fill="#3ddc97" font-size="16" text-anchor="middle">&#10003;</text>
+        <text x="590" y="111" fill="#fff" font-size="14.5" font-weight="600">Serial &#8594; cloud DB</text>
+        <text x="558" y="147" fill="#8fb0c6" font-size="11.5">The pit PC reads the USB and pushes frames</text>
+        <text x="558" y="166" fill="#8fb0c6" font-size="11.5">to a cloud database. Grafana runs in the</text>
+        <text x="558" y="185" fill="#8fb0c6" font-size="11.5">cloud, so dashboards open from anywhere.</text>
+        <text x="558" y="223" fill="#4fc3f7" font-size="11.5" font-weight="600">→ §5.5 · Hybrid · serial</text>
+      </a>
+
+      <rect x="150" y="260" width="370" height="170" rx="11" fill="#201525" stroke="#ff5e5e" stroke-width="1.6" stroke-dasharray="6 4"/>
+      <circle cx="180" cy="292" r="14" fill="#3a1a1f" stroke="#ff5e5e" stroke-width="1.4"/>
+      <text x="180" y="297" fill="#ff5e5e" font-size="16" text-anchor="middle">&#10007;</text>
+      <text x="204" y="297" fill="#fff" font-size="14.5" font-weight="600">No USB on the cloud</text>
+      <text x="172" y="333" fill="#b0929a" font-size="11.5">Node-RED can only read the serial port on a</text>
+      <text x="172" y="352" fill="#b0929a" font-size="11.5">machine the receiver is plugged into — a</text>
+      <text x="172" y="371" fill="#b0929a" font-size="11.5">cloud box has none.</text>
+      <text x="172" y="409" fill="#7a5b62" font-size="11.5" font-weight="600">— impossible</text>
+
+      <rect x="536" y="260" width="370" height="170" rx="11" fill="#201525" stroke="#ff5e5e" stroke-width="1.6" stroke-dasharray="6 4"/>
+      <circle cx="566" cy="292" r="14" fill="#3a1a1f" stroke="#ff5e5e" stroke-width="1.4"/>
+      <text x="566" y="297" fill="#ff5e5e" font-size="16" text-anchor="middle">&#10007;</text>
+      <text x="590" y="297" fill="#fff" font-size="14.5" font-weight="600">Still no USB</text>
+      <text x="558" y="333" fill="#b0929a" font-size="11.5">Everything in the cloud still leaves no USB</text>
+      <text x="558" y="352" fill="#b0929a" font-size="11.5">port for the receiver to plug into.</text>
+      <text x="558" y="371" fill="#b0929a" font-size="11.5">(Use MQTT for a fully-cloud setup.)</text>
+      <text x="558" y="409" fill="#7a5b62" font-size="11.5" font-weight="600">— use MQTT instead</text>
+    </svg>
+  </div>
+  <p style="font-size:12px;color:var(--faint);margin:8px 0 0;text-align:center">MQTT flexes to all four mixes (Node-RED follows the broker); serial pins Node-RED to a local machine because the USB is physical, so only two work. Red cells are impossible.</p>
   </div>
 
   <div class="note orange"><b>Two compose modes — production vs normal.</b> The stack ships with two Compose setups, and which one you use depends on where you run it:
@@ -1023,8 +1085,34 @@ docker compose -f docker-compose.yaml -f docker-compose.production.yaml up -d</c
   </ol>
   <div class="note"><b>Matching Terraform's hardening by hand (recommended):</b> require <b>IMDSv2</b>, give the box a <b>least-privilege role</b> instead of long-lived keys, and prefer <b>SSM Session Manager</b> over an open port 22. Terraform does all three automatically in <a href="#deploy-terraform">5.1</a>.</div>
 
-  <h3 id="deploy-local">5.3 💻 Local — one PC</h3>
-  <p>Run the whole platform on one machine (a pit laptop) with the <b>normal</b> compose — no external volume, nothing cloud. Best for development, testing, and zero-connectivity tracks.</p>
+  <h3 id="deploy-hybrid">5.3 🔀 Hybrid · cloud broker → local stack</h3>
+  <p>Dashboards and database run locally (normal compose), but the MQTT broker lives in the cloud — for when the car needs a reachable broker yet the pit machine sits behind a strict network.</p>
+  <ol>
+    <li><b>Run the local stack</b> exactly as <a href="#deploy-local">5.6</a>:
+    <pre><code>docker compose up -d</code></pre></li>
+    <li><b>Point at the cloud broker:</b> in Node-RED's <code>mqtt in</code> node set the server to the cloud Mosquitto's address (port <code>1884</code>) and <b>Deploy</b>; point the ESP32 at the same address.</li>
+  </ol>
+  <p><b>Inputs:</b> live MQTT via the cloud broker, plus CSV replay. For <b>USB serial</b>, Node-RED runs natively — that's <a href="#deploy-local-serial">Local · serial §5.7</a> or <a href="#deploy-hybrid-serial">Hybrid · serial §5.5</a>. How to feed each: <a href="#inputflows">§7.2.1</a>.</p>
+
+  <h3 id="deploy-hybrid-localbroker">5.4 🔀 Hybrid · local broker → cloud dashboards</h3>
+  <p>The MQTT broker and Node-RED run on the <b>pit LAN</b> (the ESP32 publishes to the local Mosquitto), but the <b>database and Grafana live in the cloud</b> — capture is local, dashboards open from anywhere. The mirror image of <a href="#deploy-hybrid">§5.3</a>.</p>
+  <ol>
+    <li><b>Run the broker + Node-RED locally</b> — the normal stack (<code>docker compose up -d</code>) on the pit PC; the ESP32 publishes to the host's LAN IP:1884 (as in <a href="#deploy-local">§5.6</a>).</li>
+    <li><b>Stand up the cloud database + Grafana</b> — <a href="#deploy-terraform">§5.1</a> (or <a href="#deploy-cloud">§5.2</a>). That box's own broker + Node-RED go unused here.</li>
+    <li><b>Point local Node-RED's Postgres node at the cloud DB</b> — Host = the server's IP with the DB port and string-typed credentials, <i>not</i> <code>localhost</code>. Open that DB port to the pit PC's IP in the security group.</li>
+  </ol>
+  <p><b>Inputs:</b> live MQTT via the local broker, plus CSV replay. Same shape as <a href="#deploy-hybrid-serial">Hybrid · serial §5.5</a> (local capture → cloud dashboards) but with an MQTT broker instead of USB.</p>
+
+  <h3 id="deploy-hybrid-serial">5.5 🔀 Hybrid · serial → cloud dashboards</h3>
+  <p>The receiver is plugged into the pit PC by <b>USB</b>, but the database and Grafana run in the <b>cloud</b> — so the serial data comes off a local machine while the dashboards stay reachable from anywhere. (The top-right cell of the serial diagram in <a href="#serial">§7.2.1.3</a>.)</p>
+  <ol>
+    <li><b>Stand up the cloud stack</b> for the database + Grafana — <a href="#deploy-terraform">§5.1</a> (or <a href="#deploy-cloud">§5.2</a>). Its own MQTT input goes unused on this path.</li>
+    <li><b>Run Node-RED natively on the pit PC</b> to reach the USB port — the serial setup in <a href="#serial">§7.2.1.3</a> (install Node.js + Node-RED, add the serial node, find your port, baud <b>38400</b>).</li>
+    <li><b>Point Node-RED's Postgres node at the cloud DB</b> — Host = the server's IP with the DB port and string-typed credentials, <i>not</i> <code>localhost</code>. Open that DB port to the pit PC's IP in the security group.</li>
+  </ol>
+  <p><b>Inputs:</b> USB serial only. Prefer MQTT into a cloud DB? <a href="#deploy-hybrid-localbroker">§5.4</a> (local broker) or <a href="#deploy-terraform">Cloud §5.1</a> (all cloud). Everything local? <a href="#deploy-local-serial">Local · serial §5.7</a>.</p>
+  <h3 id="deploy-local">5.6 💻 Local · MQTT — one PC</h3>
+  <p>Run the whole platform on one machine (a pit laptop) with the <b>normal</b> compose — broker, Node-RED, database, and Grafana all local, the ESP32 publishing to the local broker over the LAN. Best for development, testing, and zero-connectivity tracks. (For the USB variant, <a href="#deploy-local-serial">§5.7</a>.)</p>
   <ol>
     <li><b>Set up</b> with <a href="#install">§4</a> — clone and edit <code>.env</code>.</li>
     <li><b>Start the normal (dev) stack:</b>
@@ -1037,7 +1125,7 @@ docker compose -f docker-compose.yaml -f docker-compose.production.yaml up -d</c
 docker compose logs -f     # live logs (add 'flyway' to confirm the DB got built)
 docker compose down        # stop (keeps your data)</code></pre>
   <div class="note"><b>pgAdmin first-run:</b> <i>Servers → Register → Server</i> → Connection: Host <code>postgresdb</code>, Port <code>5432</code> (the inside-Docker address, not <code>localhost:5433</code>), plus your <code>POSTGRES_*</code> values. Tick <b>Save password</b>.</div>
-  <p><b>Inputs:</b> live MQTT (point the ESP32 at the host's LAN IP, port <code>1884</code>), CSV replay, and — uniquely to local — a <b>direct USB serial</b> link to the receiver. How to feed each: <a href="#inputflows">§7.2.1</a>.</p>
+  <p><b>Inputs:</b> live MQTT (the ESP32 publishes to the host's LAN IP, port <code>1884</code>) and CSV replay. For the <b>USB serial</b> variant see <a href="#deploy-local-serial">§5.7 Local · serial</a>. How to feed each: <a href="#inputflows">§7.2.1</a>.</p>
   <div class="note orange"><b>Running locally with live data? Two things to get right:</b>
     <ul style="margin:8px 0 0">
       <li><b>Keep the host awake for the whole session.</b> Your PC <i>is</i> the server — there's no 24/7 cloud box behind it. If it sleeps, hibernates, or shuts down mid-collection, the broker and pipeline stop and those frames are gone. Disable sleep and stay on mains power until you're done.</li>
@@ -1051,14 +1139,9 @@ docker compose ps mosquitto        # confirm it says "running"</code></pre>
 mosquitto_pub -h localhost -p 1884 -t car_telemetry -m "test"</code></pre>
   Full topic/port picture: <a href="#svc-mosquitto">§7.1 Mosquitto</a> · <a href="#feed-mqtt">§7.2.1.1 Live MQTT</a>.</div>
 
-  <h3 id="deploy-hybrid">5.4 🔀 Hybrid — local stack, cloud broker</h3>
-  <p>Dashboards and database run locally (normal compose), but the MQTT broker lives in the cloud — for when the car needs a reachable broker yet the pit machine sits behind a strict network.</p>
-  <ol>
-    <li><b>Run the local stack</b> exactly as <a href="#deploy-local">5.3</a>:
-    <pre><code>docker compose up -d</code></pre></li>
-    <li><b>Point at the cloud broker:</b> in Node-RED's <code>mqtt in</code> node set the server to the cloud Mosquitto's address (port <code>1884</code>) and <b>Deploy</b>; point the ESP32 at the same address.</li>
-  </ol>
-  <p><b>Inputs:</b> live MQTT via the cloud broker, CSV replay, and USB serial all work. How to feed each: <a href="#inputflows">§7.2.1</a>.</p>
+  <h3 id="deploy-local-serial">5.7 💻 Local · serial — one PC, USB</h3>
+  <p>Everything on one machine like <a href="#deploy-local">§5.6</a>, but the live input is the receiver over <b>USB</b> instead of MQTT. A Docker container can't reach the USB port, so Node-RED runs <b>natively</b> — the full walkthrough (install Node-RED, find the port, baud 38400) is in <a href="#serial">§7.2.1.3</a>.</p>
+  <p><b>Inputs:</b> USB serial (native Node-RED) plus CSV replay. Live MQTT on one PC instead? <a href="#deploy-local">§5.6 Local · MQTT</a>. Dashboards in the cloud? <a href="#deploy-hybrid-serial">Hybrid · serial §5.5</a>.</p>
 </section>
 
 <!-- ================= MAINTAINER: OPERATIONS ================= -->
@@ -1293,9 +1376,9 @@ exit                                  # leave the SSM session</code></pre>
   </ul>
 
   <h4 style="font-size:16px;color:#fff;margin-top:22px">Feeding data in — the three ways</h4>
-  <p>The flows above are the roads in; here is how you actually push data down them. Live MQTT is the racing default, CSV replays an old session, and serial is the local USB option.</p>
+  <p>The flows above are the roads in; here is how you push data down them. <b>Where</b> the broker and stack run — and how to point the ESP32/receiver at them — is <a href="#deployment">§5 Deployment</a>; this section is the <b>Node-RED side</b>: the topic and frame format each input needs, and the nodes you actually touch. Live MQTT is the racing default, CSV replays an old session, serial is the local USB option.</p>
 
-  <p id="feed-mqtt" style="margin-bottom:6px"><b>7.2.1.1 · Live MQTT — the racing path.</b> Node-RED always listens on topic <code>car_telemetry</code>. The receiver ESP32 publishes 15-field frames to the broker (cloud IP or local host, <b>host port 1884</b>); they flow in and get stamped on arrival — nothing to click. Hand-test from any machine:</p>
+  <p id="feed-mqtt" style="margin-bottom:6px"><b>7.2.1.1 · Live MQTT — the racing path.</b> Node-RED always listens on topic <code>car_telemetry</code> for <b>15-field frames</b>; they get stamped on arrival — nothing to click. <i>Which</i> broker, which IP, and pointing the ESP32 at it is <a href="#deployment">§5</a> — here it is just the topic and format. Hand-test the pipeline from any machine with a real frame:</p>
   <pre><code>mosquitto_pub -h &lt;server-ip&gt; -p 1884 -t car_telemetry \
   -m "15000,-8000,19660,12000,D,21357,11644,0,0,0,0,0,1,0,1"</code></pre>
   <div class="note"><b>1884 or 1883?</b> External publishers (the ESP32, <code>mosquitto_pub</code>) connect to the <b>host</b> port <code>1884</code>. Inside Docker the broker listens on <code>1883</code>, so Node-RED's own MQTT node uses <code>mosquitto:1883</code> — Compose maps <code>1884:1883</code> between them. More in <a href="#svc-mosquitto">7.1 Mosquitto</a>.</div>
@@ -1321,7 +1404,7 @@ exit                                  # leave the SSM session</code></pre>
   <div class="fix"><b>CSV rows all dropped:</b> the timestamp column is missing — 16 columns required.</div>
   <div class="fix"><b>CSV import added no rows:</b> those timestamps already exist — duplicate protection (<a href="#svc-postgres">why</a>). Re-importing the same file is always safe.</div>
 
-  <p id="serial" style="margin-bottom:6px"><b>7.2.1.3 · Serial connection — local USB, no MQTT.</b> For when the LoRa receiver is plugged in by USB. Docker containers can't reach USB ports, so Node-RED must run <b>natively</b> (local deployment only). The serial nodes in the committed flow are disabled placeholders; the active local flow is provided separately.</p>
+  <p id="serial" style="margin-bottom:6px"><b>7.2.1.3 · Serial connection — local USB, no MQTT.</b> For when the LoRa receiver is plugged in by USB. Docker containers can't reach USB ports, so Node-RED must run <b>natively</b>. <i>Where</i> that native Node-RED can live — all-local, or feeding a cloud database — is the serial range diagram in <a href="#deployment">§5</a> (<a href="#deploy-local">§5.5</a> / <a href="#deploy-hybrid-serial">§5.4</a>). The committed serial nodes are disabled placeholders; the active local flow is provided separately. The Node-RED setup:</p>
   <ol>
     <li><b>Install Node.js</b> (LTS) from <a href="https://nodejs.org">nodejs.org</a>; verify <code>node --version</code> &amp; <code>npm --version</code>.</li>
     <li><b>Install Node-RED:</b> <code>npm install -g --unsafe-perm node-red</code>. Run <code>node-red</code> once, stop it (Ctrl+C) — creates <code>~/.node-red</code>.</li>
